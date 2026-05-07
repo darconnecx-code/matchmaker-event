@@ -198,6 +198,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbxK0aopVke4ehvWKVJ_4uxI
 let currentUser = null, options = [], selected = [];
 let countdownEnd = null;
 let cachedMatches = null, cachedSelectedBy = null;
+let originalSelections = '';
 
 window.addEventListener('DOMContentLoaded', async () => {
   if (API_URL === 'YOUR_APPS_SCRIPT_URL_HERE') { showScreen('screenLogin'); return; }
@@ -300,9 +301,11 @@ async function doLogin() {
     const lbl=res.myGender==='M'?'female':'male';
     if(currentUser.alreadySubmitted&&currentUser.selections){
       selected=currentUser.selections.split(',').map(s=>s.trim().toUpperCase()).filter(s=>s);
+      originalSelections=selected.join(',');
       document.getElementById('mainSubtitle').textContent='You are '+currentUser.id+'. Update selections or view matches.';
     } else {
       selected=[];
+      originalSelections='';
       document.getElementById('mainSubtitle').textContent='You are '+currentUser.id+'. Select '+lbl+' participants.';
     }
 
@@ -330,7 +333,10 @@ function renderOptions(){
     grid.appendChild(chip);
   });
   renderSelectedList();
-  document.getElementById('btnSubmit').disabled=selected.length===0;
+  const changed = selected.join(',') !== originalSelections;
+  const btn = document.getElementById('btnSubmit');
+  btn.disabled = selected.length === 0 || !changed;
+  btn.textContent = changed ? 'Save Selections' : (selected.length ? 'No changes to save' : 'Save Selections');
 }
 function toggleOption(id){clearMsg('selError');const i=selected.indexOf(id);if(i>=0)selected.splice(i,1);else selected.push(id);renderOptions();}
 function renderSelectedList(){
@@ -361,6 +367,8 @@ async function doSubmit(){
     const res=await apiCall({action:'submitSelections',id:currentUser.id,selections:selected.join(',')});
     if(!res.success){showMsg('selError',res.error,'error');btn.textContent='Save Selections';btn.disabled=false;return;}
     currentUser.alreadySubmitted=true;currentUser.selections=selected.join(',');
+    originalSelections=selected.join(',');
+    cachedMatches=null;cachedSelectedBy=null;
     showScreen('screenDone');
   }catch(e){showMsg('selError','Connection error.','error');btn.textContent='Save Selections';btn.disabled=false;}
 }
