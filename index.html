@@ -228,18 +228,25 @@ function updateCountdown() {
     showScreen('screenClosed');
     return;
   }
-  const days = Math.ceil(diff / (1000*60*60*24));
-  const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+
+  const totalMinutes = Math.floor(diff / (1000*60));
+  const totalHours = Math.floor(totalMinutes / 60);
+  const totalDays = Math.floor(totalHours / 24);
+  const remainHours = totalHours % 24;
+  const remainMinutes = totalMinutes % 60;
 
   let text, label;
-  if (days > 1) {
-    text = days + ' days';
+  if (totalDays >= 2) {
+    text = totalDays + ' days';
     label = 'remaining before event closes';
-  } else if (days === 1) {
-    text = '1 day';
+  } else if (totalDays === 1) {
+    text = '1 day ' + remainHours + 'h';
+    label = 'remaining — submit your selections!';
+  } else if (totalHours >= 1) {
+    text = totalHours + 'h ' + remainMinutes + 'm';
     label = 'remaining — submit your selections!';
   } else {
-    text = hours + ' hours';
+    text = remainMinutes + ' minutes';
     label = 'remaining — hurry!';
   }
 
