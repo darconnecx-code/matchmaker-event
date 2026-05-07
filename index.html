@@ -6,122 +6,108 @@
 <title>Matchmaker</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --gold:#c9a84c; --gold-light:#e8d598; --gold-dark:#a07d2e;
-    --ink:#1a1a2e; --ink-soft:#2d2d44;
-    --cream:#faf6ef; --cream-dark:#f0e8d8;
-    --rose:#c4556e; --rose-soft:#e8a0b0;
-    --green:#4a8c6f; --green-light:#e8f5e9;
-    --radius:12px;
-  }
+  :root{--gold:#c9a84c;--gold-light:#e8d598;--gold-dark:#a07d2e;--ink:#1a1a2e;--ink-soft:#2d2d44;--cream:#faf6ef;--cream-dark:#f0e8d8;--rose:#c4556e;--rose-soft:#e8a0b0;--green:#4a8c6f;--green-light:#e8f5e9;--radius:12px;}
   *{margin:0;padding:0;box-sizing:border-box;}
   body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;}
   body::before{content:'';position:fixed;top:-50%;right:-30%;width:80vw;height:80vw;border-radius:50%;background:radial-gradient(circle,var(--gold-light) 0%,transparent 70%);opacity:.2;pointer-events:none;}
   body::after{content:'';position:fixed;bottom:-40%;left:-20%;width:60vw;height:60vw;border-radius:50%;background:radial-gradient(circle,var(--rose-soft) 0%,transparent 70%);opacity:.15;pointer-events:none;}
-  .container{position:relative;z-index:1;max-width:600px;margin:0 auto;padding:40px 24px 60px;}
-  .header{text-align:center;margin-bottom:36px;}
-  .header .ornament{font-size:28px;color:var(--gold);letter-spacing:12px;margin-bottom:8px;}
-  .header h1{font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:700;}
-  .header p{margin-top:10px;color:var(--ink-soft);font-size:.95rem;line-height:1.5;}
-  .card{background:#fff;border:1px solid var(--cream-dark);border-radius:var(--radius);padding:28px 24px;margin-bottom:20px;box-shadow:0 2px 20px rgba(0,0,0,.04);}
-  .card h2{font-family:'Playfair Display',serif;font-size:1.25rem;margin-bottom:6px;}
-  .card .subtitle{font-size:.85rem;color:var(--ink-soft);margin-bottom:20px;line-height:1.5;}
-  label{display:block;font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-soft);margin-bottom:6px;}
-  input[type="text"],input[type="password"]{width:100%;padding:12px 16px;font-family:'DM Sans',sans-serif;font-size:1rem;border:1.5px solid var(--cream-dark);border-radius:8px;background:var(--cream);color:var(--ink);outline:none;transition:border-color .2s;}
+  .container{position:relative;z-index:1;max-width:600px;margin:0 auto;padding:32px 20px 60px;}
+  .header{text-align:center;margin-bottom:30px;}
+  .header .ornament{font-size:24px;color:var(--gold);letter-spacing:12px;margin-bottom:6px;}
+  .header h1{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;}
+  .header p{margin-top:8px;color:var(--ink-soft);font-size:.9rem;line-height:1.5;}
+  .card{background:#fff;border:1px solid var(--cream-dark);border-radius:var(--radius);padding:24px 20px;margin-bottom:16px;box-shadow:0 2px 20px rgba(0,0,0,.04);}
+  .card h2{font-family:'Playfair Display',serif;font-size:1.2rem;margin-bottom:4px;}
+  .card .subtitle{font-size:.83rem;color:var(--ink-soft);margin-bottom:18px;line-height:1.5;}
+  label{display:block;font-weight:600;font-size:.76rem;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-soft);margin-bottom:5px;}
+  input[type="text"],input[type="password"]{width:100%;padding:11px 14px;font-family:'DM Sans',sans-serif;font-size:1rem;border:1.5px solid var(--cream-dark);border-radius:8px;background:var(--cream);color:var(--ink);outline:none;transition:border-color .2s;}
   input:focus{border-color:var(--gold);}
-  .field{margin-bottom:18px;}
-  .btn{display:inline-flex;align-items:center;justify-content:center;width:100%;padding:13px 24px;font-family:'DM Sans',sans-serif;font-size:.93rem;font-weight:600;border:none;border-radius:8px;cursor:pointer;transition:all .25s;}
-  .btn-primary{background:var(--gold);color:#fff;}
-  .btn-primary:hover{background:var(--gold-dark);}
+  .field{margin-bottom:16px;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;width:100%;padding:12px 20px;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:600;border:none;border-radius:8px;cursor:pointer;transition:all .25s;}
+  .btn-primary{background:var(--gold);color:#fff;}.btn-primary:hover{background:var(--gold-dark);}
   .btn-primary:disabled{background:var(--cream-dark);color:#aaa;cursor:not-allowed;}
-  .btn-sm{width:auto;padding:8px 18px;font-size:.82rem;border-radius:6px;}
-  .btn-green{background:var(--green);color:#fff;}
-  .btn-green:hover{background:#3d7a5e;}
-  .btn-outline{background:transparent;border:1.5px solid var(--gold);color:var(--gold-dark);width:auto;padding:8px 18px;font-size:.82rem;border-radius:6px;}
+  .btn-sm{width:auto;padding:7px 16px;font-size:.8rem;border-radius:6px;}
+  .btn-green{background:var(--green);color:#fff;}.btn-green:hover{background:#3d7a5e;}
+  .btn-rose{background:var(--rose);color:#fff;}.btn-rose:hover{background:#a84058;}
+  .btn-outline{background:transparent;border:1.5px solid var(--gold);color:var(--gold-dark);width:auto;padding:7px 16px;font-size:.8rem;border-radius:6px;}
+
+  /* Countdown */
+  .countdown-banner{background:linear-gradient(135deg,#fff3cd,#fff8e1);border:1.5px solid #ffe082;border-radius:var(--radius);padding:14px 18px;margin-bottom:16px;text-align:center;}
+  .countdown-banner .days{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--gold-dark);}
+  .countdown-banner .label-text{font-size:.82rem;color:var(--ink-soft);margin-top:2px;}
 
   /* Tabs */
-  .tabs{display:flex;gap:0;margin-bottom:20px;border-bottom:2px solid var(--cream-dark);}
-  .tab{flex:1;padding:12px 8px;text-align:center;font-size:.85rem;font-weight:600;color:var(--ink-soft);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;}
+  .tabs{display:flex;gap:0;margin-bottom:16px;border-bottom:2px solid var(--cream-dark);}
+  .tab{flex:1;padding:10px 6px;text-align:center;font-size:.82rem;font-weight:600;color:var(--ink-soft);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;}
   .tab.active{color:var(--gold-dark);border-bottom-color:var(--gold);}
-  .tab-content{display:none;}
-  .tab-content.active{display:block;animation:fadeIn .3s ease;}
+  .tab-content{display:none;}.tab-content.active{display:block;animation:fadeIn .3s ease;}
 
-  /* Options grid */
-  .options-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:20px;max-height:360px;overflow-y:auto;padding:4px;}
-  .option-chip{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--cream);border:1.5px solid var(--cream-dark);border-radius:8px;cursor:pointer;font-size:.86rem;font-weight:500;transition:all .2s;user-select:none;}
+  /* Options */
+  .options-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-bottom:16px;max-height:340px;overflow-y:auto;padding:2px;}
+  .option-chip{display:flex;align-items:center;gap:6px;padding:9px 12px;background:var(--cream);border:1.5px solid var(--cream-dark);border-radius:8px;cursor:pointer;font-size:.84rem;font-weight:500;transition:all .2s;user-select:none;}
   .option-chip:hover{border-color:var(--gold-light);background:#fff;}
   .option-chip.selected{border-color:var(--gold);background:linear-gradient(135deg,#fdf6e3,#fff8e7);box-shadow:0 0 0 1px var(--gold);}
-  .option-chip .rank{display:none;min-width:22px;height:22px;border-radius:50%;background:var(--gold);color:#fff;font-size:.7rem;font-weight:700;align-items:center;justify-content:center;flex-shrink:0;}
+  .option-chip .rank{display:none;min-width:20px;height:20px;border-radius:50%;background:var(--gold);color:#fff;font-size:.68rem;font-weight:700;align-items:center;justify-content:center;flex-shrink:0;}
   .option-chip.selected .rank{display:inline-flex;}
 
-  /* Selected list */
-  .selected-list{margin-bottom:20px;}
-  .selected-list h3{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-soft);margin-bottom:10px;}
-  .sel-count{font-size:.82rem;color:var(--ink-soft);margin-bottom:10px;}
-  .selected-item{display:flex;align-items:center;gap:10px;padding:8px 12px;background:#fff;border:1.5px solid var(--gold-light);border-radius:8px;margin-bottom:6px;font-size:.86rem;font-weight:500;}
-  .selected-item .num{min-width:22px;height:22px;border-radius:50%;background:var(--gold);color:#fff;font-size:.7rem;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
-  .selected-item .move-btns{margin-left:auto;display:flex;gap:3px;}
-  .selected-item .move-btns button{background:var(--cream);border:1px solid var(--cream-dark);border-radius:4px;width:26px;height:26px;cursor:pointer;font-size:.7rem;display:flex;align-items:center;justify-content:center;}
+  .selected-list{margin-bottom:16px;}
+  .selected-list h3{font-size:.76rem;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-soft);margin-bottom:8px;}
+  .sel-count{font-size:.8rem;color:var(--ink-soft);margin-bottom:8px;}
+  .selected-item{display:flex;align-items:center;gap:8px;padding:7px 10px;background:#fff;border:1.5px solid var(--gold-light);border-radius:8px;margin-bottom:5px;font-size:.84rem;font-weight:500;}
+  .selected-item .num{min-width:20px;height:20px;border-radius:50%;background:var(--gold);color:#fff;font-size:.68rem;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .selected-item .move-btns{margin-left:auto;display:flex;gap:2px;}
+  .selected-item .move-btns button{background:var(--cream);border:1px solid var(--cream-dark);border-radius:4px;width:24px;height:24px;cursor:pointer;font-size:.68rem;display:flex;align-items:center;justify-content:center;}
   .selected-item .move-btns button:hover{background:var(--cream-dark);}
-  .remove-btn{background:none;border:none;color:var(--rose);cursor:pointer;font-size:1rem;padding:0 4px;}
+  .remove-btn{background:none;border:none;color:var(--rose);cursor:pointer;font-size:.95rem;padding:0 3px;}
 
-  /* Search */
-  .search-box{width:100%;padding:10px 14px;font-family:'DM Sans',sans-serif;font-size:.88rem;border:1.5px solid var(--cream-dark);border-radius:8px;background:var(--cream);color:var(--ink);outline:none;margin-bottom:12px;}
+  .search-box{width:100%;padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:.86rem;border:1.5px solid var(--cream-dark);border-radius:8px;background:var(--cream);color:var(--ink);outline:none;margin-bottom:10px;}
   .search-box:focus{border-color:var(--gold);}
 
-  /* Messages */
-  .msg{padding:12px 16px;border-radius:8px;font-size:.88rem;margin-bottom:14px;line-height:1.5;}
+  .msg{padding:11px 14px;border-radius:8px;font-size:.85rem;margin-bottom:12px;line-height:1.5;}
   .msg-error{background:#fdedef;color:#9b2c3e;border:1px solid #f5c6ce;}
   .msg-success{background:#e8f5e9;color:#2e6b3a;border:1px solid #c8e6c9;}
   .msg-info{background:#fff8e1;color:#7c6316;border:1px solid #ffe082;}
 
   /* Match cards */
-  .match-card{background:var(--green-light);border:1.5px solid #a5d6a7;border-radius:10px;padding:16px;margin-bottom:12px;}
-  .match-card h3{font-family:'Playfair Display',serif;font-size:1.05rem;margin-bottom:6px;}
-  .match-card .detail{font-size:.84rem;color:var(--ink-soft);margin-bottom:4px;}
-  .match-card .phone-reveal{margin-top:10px;padding:10px 14px;background:#fff;border-radius:8px;font-size:.88rem;}
-  .match-card .phone-number{font-size:1.1rem;font-weight:700;color:var(--green);letter-spacing:1px;}
+  .match-card{background:var(--green-light);border:1.5px solid #a5d6a7;border-radius:10px;padding:14px;margin-bottom:10px;}
+  .match-card h3{font-family:'Playfair Display',serif;font-size:1rem;margin-bottom:4px;}
+  .match-card .detail{font-size:.82rem;color:var(--ink-soft);margin-bottom:4px;}
+  .match-card .phone-reveal{margin-top:8px;padding:10px 12px;background:#fff;border-radius:8px;font-size:.85rem;}
+  .match-card .phone-number{font-size:1.05rem;font-weight:700;color:var(--green);letter-spacing:1px;}
+  .match-card .action-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
 
-  /* Who selected me */
-  .selector-tag{display:inline-block;padding:6px 14px;background:var(--cream);border:1.5px solid var(--gold-light);border-radius:20px;font-size:.85rem;font-weight:500;margin:4px 4px 4px 0;}
+  .selector-tag{display:inline-block;padding:5px 12px;background:var(--cream);border:1.5px solid var(--gold-light);border-radius:20px;font-size:.83rem;font-weight:500;margin:3px 3px 3px 0;}
 
-  /* Spinner */
-  .spinner{display:inline-block;width:18px;height:18px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;margin-right:8px;}
+  .spinner{display:inline-block;width:16px;height:16px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;margin-right:6px;}
   @keyframes spin{to{transform:rotate(360deg);}}
-  .screen{display:none;}
-  .screen.active{display:block;animation:fadeIn .4s ease;}
-  @keyframes fadeIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
-  .footer{text-align:center;margin-top:36px;font-size:.78rem;color:#aaa;}
-  .config-banner{background:#fff3cd;border:2px dashed #d4a017;border-radius:var(--radius);padding:16px;margin-bottom:20px;text-align:center;font-size:.88rem;}
-  .config-banner code{background:#fff;padding:2px 8px;border-radius:4px;font-size:.82rem;}
-
-  /* Closed banner */
-  .closed-banner{text-align:center;padding:60px 20px;}
-  .closed-banner h2{font-family:'Playfair Display',serif;font-size:1.8rem;margin-bottom:12px;color:var(--ink);}
-  .closed-banner p{color:var(--ink-soft);font-size:1rem;}
-
+  .screen{display:none;}.screen.active{display:block;animation:fadeIn .4s ease;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+  .footer{text-align:center;margin-top:30px;font-size:.76rem;color:#aaa;}
+  .closed-banner{text-align:center;padding:50px 20px;}
+  .closed-banner h2{font-family:'Playfair Display',serif;font-size:1.7rem;margin-bottom:10px;}
+  .closed-banner p{color:var(--ink-soft);font-size:.95rem;}
   .loading-dots::after{content:'';animation:dots 1.5s steps(4,end) infinite;}
-  @keyframes dots{0%{content:'';}25%{content:'.'}50%{content:'..'}75%{content:'...'}}
+  @keyframes dots{0%{content:'';}25%{content:'.';}50%{content:'..';}75%{content:'...';}}
 </style>
 </head>
 <body>
-
 <div class="container">
-
   <div class="header">
     <div class="ornament">✦ ✦ ✦</div>
     <h1>Matchmaker</h1>
     <p>Log in with your ID and password to<br>submit selections and view matches.</p>
   </div>
 
-  <div class="config-banner" id="configBanner" style="display:none;">
-    Replace <code>YOUR_APPS_SCRIPT_URL_HERE</code> in this file with your Apps Script URL.
+  <!-- COUNTDOWN BANNER (shown on login screen if active) -->
+  <div id="countdownBanner" class="countdown-banner" style="display:none;">
+    <div class="days" id="countdownDays"></div>
+    <div class="label-text" id="countdownLabel"></div>
   </div>
 
   <!-- EVENT CLOSED -->
   <div class="screen" id="screenClosed">
     <div class="card closed-banner">
-      <div style="font-size:2.5rem;margin-bottom:16px;">🔒</div>
+      <div style="font-size:2.5rem;margin-bottom:14px;">🔒</div>
       <h2>Event Closed</h2>
       <p>This matchmaking event has ended.<br>Thank you for participating!</p>
     </div>
@@ -139,20 +125,25 @@
       </div>
       <div class="field">
         <label for="loginPass">Password</label>
-        <input type="password" id="loginPass" placeholder="6-digit password">
+        <input type="password" id="loginPass" placeholder="6-digit password" inputmode="numeric">
       </div>
       <button class="btn btn-primary" id="btnLogin" onclick="doLogin()">Sign In</button>
     </div>
   </div>
 
-  <!-- MAIN (after login) -->
+  <!-- MAIN -->
   <div class="screen" id="screenMain">
-    <div class="card" style="padding-bottom:8px;">
+    <!-- Countdown inside main too -->
+    <div id="countdownBannerMain" class="countdown-banner" style="display:none;">
+      <div class="days" id="countdownDaysMain"></div>
+      <div class="label-text" id="countdownLabelMain"></div>
+    </div>
+
+    <div class="card" style="padding-bottom:6px;">
       <h2>Welcome, <span id="userName"></span></h2>
       <p class="subtitle" id="mainSubtitle"></p>
-
       <div class="tabs">
-        <div class="tab active" onclick="switchTab('selections')">My Selections</div>
+        <div class="tab active" onclick="switchTab('selections')">Selections</div>
         <div class="tab" onclick="switchTab('matches')">Matches <span id="matchBadge"></span></div>
         <div class="tab" onclick="switchTab('selectedme')">Selected Me</div>
       </div>
@@ -162,17 +153,15 @@
     <div class="tab-content active" id="tabSelections">
       <div class="card">
         <div id="selError"></div>
-        <div id="selForm">
-          <label>Tap to select in order of preference</label>
-          <input type="text" class="search-box" id="searchBox" placeholder="Search by ID or name..." oninput="renderOptions()">
-          <div class="options-grid" id="optionsGrid"></div>
-          <div class="selected-list" id="selectedListWrap" style="display:none;">
-            <h3>Your ranked selections</h3>
-            <div class="sel-count" id="selCount"></div>
-            <div id="selectedList"></div>
-          </div>
-          <button class="btn btn-primary" id="btnSubmit" onclick="doSubmit()" disabled>Save Selections</button>
+        <label>Tap to select in order of preference</label>
+        <input type="text" class="search-box" id="searchBox" placeholder="Search by ID or name..." oninput="renderOptions()">
+        <div class="options-grid" id="optionsGrid"></div>
+        <div class="selected-list" id="selectedListWrap" style="display:none;">
+          <h3>Your ranked selections</h3>
+          <div class="sel-count" id="selCount"></div>
+          <div id="selectedList"></div>
         </div>
+        <button class="btn btn-primary" id="btnSubmit" onclick="doSubmit()" disabled>Save Selections</button>
       </div>
     </div>
 
@@ -193,12 +182,12 @@
     </div>
   </div>
 
-  <!-- SAVE CONFIRMATION -->
+  <!-- SAVE DONE -->
   <div class="screen" id="screenDone">
     <div class="card" style="text-align:center;">
-      <div style="font-size:3rem;margin-bottom:16px;">✓</div>
+      <div style="font-size:2.5rem;margin-bottom:14px;">✓</div>
       <h2>Selections Saved!</h2>
-      <p class="subtitle">Your selections have been recorded. You can log in again anytime to update them or view matches.</p>
+      <p class="subtitle">You can log in again anytime to update or check matches.</p>
       <button class="btn btn-outline" onclick="showScreen('screenMain');switchTab('matches');">View My Matches</button>
     </div>
   </div>
@@ -208,154 +197,157 @@
 
 <script>
 // ============================================================
-//  CONFIGURATION
-// ============================================================
-const API_URL = 'https://script.google.com/macros/s/AKfycbxK0aopVke4ehvWKVJ_4uxIeLON-LNsdovp9UDeWrCGuXvQTQzqRkYO1Mj0osjBG8vi/exec';
+const API_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
 // ============================================================
 
-let currentUser = null;
-let options = [];
-let selected = [];
+let currentUser = null, options = [], selected = [];
+let countdownEnd = null;
 
 window.addEventListener('DOMContentLoaded', async () => {
-  if (API_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
-    document.getElementById('configBanner').style.display = 'block';
-    showScreen('screenLogin');
-    return;
-  }
-  // Check event status
+  if (API_URL === 'YOUR_APPS_SCRIPT_URL_HERE') { showScreen('screenLogin'); return; }
   try {
-    const res = await apiCall({ action: 'checkStatus' });
-    if (res.success && res.status === 'CLOSED') {
-      showScreen('screenClosed');
-    } else {
-      showScreen('screenLogin');
+    const res = await apiCall({action:'checkStatus'});
+    if (res.success && res.status === 'CLOSED') { showScreen('screenClosed'); return; }
+    if (res.countdownEnd) {
+      countdownEnd = new Date(res.countdownEnd);
+      updateCountdown();
+      setInterval(updateCountdown, 60000); // update every minute
     }
-  } catch (e) {
     showScreen('screenLogin');
-  }
+  } catch(e) { showScreen('screenLogin'); }
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
-  document.getElementById('loginId').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('loginPass').focus(); });
+  document.getElementById('loginPass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+  document.getElementById('loginId').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('loginPass').focus(); });
 });
 
+// --- Countdown ---
+function updateCountdown() {
+  if (!countdownEnd) return;
+  const now = new Date();
+  const diff = countdownEnd - now;
+  if (diff <= 0) {
+    showScreen('screenClosed');
+    return;
+  }
+  const days = Math.ceil(diff / (1000*60*60*24));
+  const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+
+  let text, label;
+  if (days > 1) {
+    text = days + ' days';
+    label = 'remaining before event closes';
+  } else if (days === 1) {
+    text = '1 day';
+    label = 'remaining — submit your selections!';
+  } else {
+    text = hours + ' hours';
+    label = 'remaining — hurry!';
+  }
+
+  // Login screen
+  const b1 = document.getElementById('countdownBanner');
+  b1.style.display = 'block';
+  document.getElementById('countdownDays').textContent = text;
+  document.getElementById('countdownLabel').textContent = label;
+
+  // Main screen
+  const b2 = document.getElementById('countdownBannerMain');
+  b2.style.display = 'block';
+  document.getElementById('countdownDaysMain').textContent = text;
+  document.getElementById('countdownLabelMain').textContent = label;
+}
+
+// --- Helpers ---
 function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
-function showMsg(cid, text, type) { document.getElementById(cid).innerHTML = '<div class="msg msg-' + type + '">' + text + '</div>'; }
-function clearMsg(cid) { document.getElementById(cid).innerHTML = ''; }
+function showMsg(c,t,ty){document.getElementById(c).innerHTML='<div class="msg msg-'+ty+'">'+t+'</div>';}
+function clearMsg(c){document.getElementById(c).innerHTML='';}
 
 async function apiCall(params) {
-  const qs = new URLSearchParams(params).toString();
-  const res = await fetch(API_URL + '?' + qs);
-  if (!res.ok) throw new Error('Network error: ' + res.status);
+  const res = await fetch(API_URL+'?'+new URLSearchParams(params).toString());
+  if(!res.ok) throw new Error('Network '+res.status);
   return res.json();
 }
 
-// --- TABS ---
+// --- Tabs ---
 function switchTab(name) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-  document.querySelector('.tab-content#tab' + name.charAt(0).toUpperCase() + name.slice(1)).classList.add('active');
-  // Highlight tab
-  const tabs = document.querySelectorAll('.tab');
-  const map = { selections: 0, matches: 1, selectedme: 2 };
-  tabs[map[name]].classList.add('active');
-
-  if (name === 'matches') loadMatches();
-  if (name === 'selectedme') loadSelectedMe();
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  const capName = name.charAt(0).toUpperCase()+name.slice(1);
+  document.getElementById('tab'+capName).classList.add('active');
+  const map={selections:0,matches:1,selectedme:2};
+  document.querySelectorAll('.tab')[map[name]].classList.add('active');
+  if(name==='matches') loadMatches();
+  if(name==='selectedme') loadSelectedMe();
 }
 
-// --- LOGIN ---
+// --- Login ---
 async function doLogin() {
   clearMsg('loginError');
-  const id = document.getElementById('loginId').value.trim();
-  const pw = document.getElementById('loginPass').value.trim();
-  if (!id || !pw) { showMsg('loginError', 'Please enter both fields.', 'error'); return; }
-
-  const btn = document.getElementById('btnLogin');
-  btn.innerHTML = '<span class="spinner"></span> Signing in…'; btn.disabled = true;
-
+  const id=document.getElementById('loginId').value.trim();
+  const pw=document.getElementById('loginPass').value.trim();
+  if(!id||!pw){showMsg('loginError','Please enter both fields.','error');return;}
+  const btn=document.getElementById('btnLogin');
+  btn.innerHTML='<span class="spinner"></span> Signing in…';btn.disabled=true;
   try {
-    const res = await apiCall({ action: 'login', id, password: pw });
-    if (!res.success) {
-      if (res.error === 'EVENT_CLOSED') { showScreen('screenClosed'); return; }
-      showMsg('loginError', res.error, 'error');
-      btn.textContent = 'Sign In'; btn.disabled = false; return;
+    const res=await apiCall({action:'login',id,password:pw});
+    if(!res.success){
+      if(res.error==='EVENT_CLOSED'){showScreen('screenClosed');return;}
+      showMsg('loginError',res.error,'error');btn.textContent='Sign In';btn.disabled=false;return;
     }
-
-    currentUser = res.participant;
-    document.getElementById('userName').textContent = currentUser.name || currentUser.id;
-
-    const optRes = await apiCall({ action: 'getOptions', id: currentUser.id });
-    if (!optRes.success) { showMsg('loginError', optRes.error, 'error'); btn.textContent = 'Sign In'; btn.disabled = false; return; }
-
-    options = optRes.options;
-    const label = optRes.myGender === 'M' ? 'female' : 'male';
-
-    if (currentUser.alreadySubmitted && currentUser.selections) {
-      selected = currentUser.selections.split(',').map(s => s.trim().toUpperCase()).filter(s => s);
-      document.getElementById('mainSubtitle').textContent = 'You are ' + currentUser.id + '. Update your selections or view matches.';
+    currentUser=res.participant;
+    document.getElementById('userName').textContent=currentUser.name||currentUser.id;
+    const optRes=await apiCall({action:'getOptions',id:currentUser.id});
+    if(!optRes.success){showMsg('loginError',optRes.error,'error');btn.textContent='Sign In';btn.disabled=false;return;}
+    options=optRes.options;
+    const lbl=optRes.myGender==='M'?'female':'male';
+    if(currentUser.alreadySubmitted&&currentUser.selections){
+      selected=currentUser.selections.split(',').map(s=>s.trim().toUpperCase()).filter(s=>s);
+      document.getElementById('mainSubtitle').textContent='You are '+currentUser.id+'. Update selections or view matches.';
     } else {
-      selected = [];
-      document.getElementById('mainSubtitle').textContent = 'You are ' + currentUser.id + '. Select ' + label + ' participants in order of preference.';
+      selected=[];
+      document.getElementById('mainSubtitle').textContent='You are '+currentUser.id+'. Select '+lbl+' participants.';
     }
-
-    renderOptions();
-    showScreen('screenMain');
-    switchTab('selections');
-
-  } catch (err) {
-    showMsg('loginError', 'Connection error. Try again.', 'error');
-    console.error(err);
-  }
-  btn.textContent = 'Sign In'; btn.disabled = false;
+    renderOptions();showScreen('screenMain');switchTab('selections');
+  } catch(err){showMsg('loginError','Connection error.','error');}
+  btn.textContent='Sign In';btn.disabled=false;
 }
 
-// --- OPTIONS ---
-function renderOptions() {
-  const grid = document.getElementById('optionsGrid');
-  const query = (document.getElementById('searchBox').value || '').toLowerCase();
-  grid.innerHTML = '';
-  const filtered = options.filter(o => o.id.toLowerCase().includes(query) || o.name.toLowerCase().includes(query));
-  filtered.forEach(opt => {
-    const chip = document.createElement('div');
-    const isSel = selected.includes(opt.id);
-    chip.className = 'option-chip' + (isSel ? ' selected' : '');
-    const ri = selected.indexOf(opt.id);
-    chip.innerHTML = '<span class="rank">' + (ri >= 0 ? ri + 1 : '') + '</span><span>' + opt.id + '</span>';
-    chip.title = opt.name || opt.id;
-    chip.onclick = () => toggleOption(opt.id);
+// --- Options ---
+function renderOptions(){
+  const grid=document.getElementById('optionsGrid');
+  const q=(document.getElementById('searchBox').value||'').toLowerCase();
+  grid.innerHTML='';
+  options.filter(o=>o.id.toLowerCase().includes(q)||o.name.toLowerCase().includes(q)).forEach(opt=>{
+    const chip=document.createElement('div');
+    const isSel=selected.includes(opt.id);
+    chip.className='option-chip'+(isSel?' selected':'');
+    const ri=selected.indexOf(opt.id);
+    chip.innerHTML='<span class="rank">'+(ri>=0?ri+1:'')+'</span><span>'+opt.id+'</span>';
+    chip.title=opt.name||opt.id;
+    chip.onclick=()=>toggleOption(opt.id);
     grid.appendChild(chip);
   });
   renderSelectedList();
-  document.getElementById('btnSubmit').disabled = selected.length === 0;
+  document.getElementById('btnSubmit').disabled=selected.length===0;
 }
-
-function toggleOption(id) {
-  clearMsg('selError');
-  const idx = selected.indexOf(id);
-  if (idx >= 0) selected.splice(idx, 1); else selected.push(id);
-  renderOptions();
-}
-
-function renderSelectedList() {
-  const wrap = document.getElementById('selectedListWrap');
-  const list = document.getElementById('selectedList');
-  if (!selected.length) { wrap.style.display = 'none'; return; }
-  wrap.style.display = 'block';
-  document.getElementById('selCount').textContent = selected.length + ' selected';
-  list.innerHTML = '';
-  selected.forEach((id, i) => {
-    const opt = options.find(o => o.id === id);
-    const div = document.createElement('div');
-    div.className = 'selected-item';
-    div.innerHTML = '<span class="num">' + (i+1) + '</span><span>' + id + (opt && opt.name ? ' — ' + opt.name : '') + '</span>' +
-      '<span class="move-btns"><button title="Up" onclick="moveUp('+i+')">▲</button><button title="Down" onclick="moveDown('+i+')">▼</button></span>' +
-      '<button class="remove-btn" title="Remove" onclick="removeAt('+i+')">✕</button>';
+function toggleOption(id){clearMsg('selError');const i=selected.indexOf(id);if(i>=0)selected.splice(i,1);else selected.push(id);renderOptions();}
+function renderSelectedList(){
+  const wrap=document.getElementById('selectedListWrap'),list=document.getElementById('selectedList');
+  if(!selected.length){wrap.style.display='none';return;}
+  wrap.style.display='block';
+  document.getElementById('selCount').textContent=selected.length+' selected';
+  list.innerHTML='';
+  selected.forEach((id,i)=>{
+    const opt=options.find(o=>o.id===id);
+    const div=document.createElement('div');div.className='selected-item';
+    div.innerHTML='<span class="num">'+(i+1)+'</span><span>'+id+(opt&&opt.name?' — '+opt.name:'')+'</span>'+
+      '<span class="move-btns"><button onclick="moveUp('+i+')">▲</button><button onclick="moveDown('+i+')">▼</button></span>'+
+      '<button class="remove-btn" onclick="removeAt('+i+')">✕</button>';
     list.appendChild(div);
   });
 }
@@ -363,121 +355,88 @@ function moveUp(i){if(i>0){[selected[i-1],selected[i]]=[selected[i],selected[i-1
 function moveDown(i){if(i<selected.length-1){[selected[i],selected[i+1]]=[selected[i+1],selected[i]];renderOptions();}}
 function removeAt(i){selected.splice(i,1);renderOptions();}
 
-// --- SUBMIT ---
-async function doSubmit() {
-  if (!selected.length) return;
-  clearMsg('selError');
-  const btn = document.getElementById('btnSubmit');
-  btn.innerHTML = '<span class="spinner"></span> Saving…'; btn.disabled = true;
-  try {
-    const res = await apiCall({ action: 'submitSelections', id: currentUser.id, selections: selected.join(',') });
-    if (!res.success) { showMsg('selError', res.error, 'error'); btn.textContent = 'Save Selections'; btn.disabled = false; return; }
-    currentUser.alreadySubmitted = true;
-    currentUser.selections = selected.join(',');
+// --- Submit ---
+async function doSubmit(){
+  if(!selected.length)return;clearMsg('selError');
+  const btn=document.getElementById('btnSubmit');
+  btn.innerHTML='<span class="spinner"></span> Saving…';btn.disabled=true;
+  try{
+    const res=await apiCall({action:'submitSelections',id:currentUser.id,selections:selected.join(',')});
+    if(!res.success){showMsg('selError',res.error,'error');btn.textContent='Save Selections';btn.disabled=false;return;}
+    currentUser.alreadySubmitted=true;currentUser.selections=selected.join(',');
     showScreen('screenDone');
-  } catch (err) {
-    showMsg('selError', 'Connection error. Try again.', 'error');
-    btn.textContent = 'Save Selections'; btn.disabled = false;
-  }
+  }catch(e){showMsg('selError','Connection error.','error');btn.textContent='Save Selections';btn.disabled=false;}
 }
 
-// --- MATCHES ---
-async function loadMatches() {
-  const content = document.getElementById('matchesContent');
-  const loading = document.getElementById('matchesLoading');
-  content.innerHTML = ''; loading.style.display = 'block';
-
-  try {
-    const res = await apiCall({ action: 'getMyMatches', id: currentUser.id });
-    loading.style.display = 'none';
-
-    if (!res.success) { content.innerHTML = '<div class="msg msg-error">' + res.error + '</div>'; return; }
-
-    if (!res.matches || !res.matches.length) {
-      content.innerHTML = '<div class="msg msg-info">No mutual matches yet. Keep checking back!</div>';
-      document.getElementById('matchBadge').textContent = '';
-      return;
+// --- Matches ---
+async function loadMatches(){
+  const content=document.getElementById('matchesContent'),loading=document.getElementById('matchesLoading');
+  content.innerHTML='';loading.style.display='block';
+  try{
+    const res=await apiCall({action:'getMyMatches',id:currentUser.id});
+    loading.style.display='none';
+    if(!res.success){content.innerHTML='<div class="msg msg-error">'+res.error+'</div>';return;}
+    if(!res.matches||!res.matches.length){
+      content.innerHTML='<div class="msg msg-info">No mutual matches yet. Check back later!</div>';
+      document.getElementById('matchBadge').textContent='';return;
     }
+    document.getElementById('matchBadge').textContent='('+res.matches.length+')';
+    let html='';
+    res.matches.forEach(m=>{
+      html+='<div class="match-card">';
+      html+='<h3>Match: '+m.id+(m.name?' — '+m.name:'')+'</h3>';
+      html+='<div class="detail">You ranked them #'+m.myRank+' · They ranked you #'+m.theirRank+'</div>';
+      html+='<div class="phone-reveal">';
 
-    document.getElementById('matchBadge').textContent = '(' + res.matches.length + ')';
-
-    let html = '';
-    res.matches.forEach(m => {
-      html += '<div class="match-card">';
-      html += '<h3>Match: ' + m.id + (m.name ? ' — ' + m.name : '') + '</h3>';
-      html += '<div class="detail">You ranked them #' + m.myRank + ' · They ranked you #' + m.theirRank + '</div>';
-
-      if (m.bothAgreed) {
-        html += '<div class="phone-reveal">';
-        html += 'Both agreed to share! <br><span class="phone-number">📞 ' + m.phone + '</span>';
-        html += '</div>';
-      } else if (m.iAgreed && !m.theyAgreed) {
-        html += '<div class="phone-reveal">';
-        html += '✓ You agreed to share your number.<br>Waiting for <strong>' + m.id + '</strong> to agree…';
-        html += '</div>';
+      if(m.bothAgreed){
+        html+='<div style="margin-bottom:6px;">Both agreed! Numbers revealed:</div>';
+        html+='<div class="phone-number">📞 '+m.phone+'</div>';
+        html+='<div class="action-row">';
+        html+='<button class="btn btn-sm btn-rose" onclick="revokeReveal(\''+m.id+'\',this)">Revoke sharing</button>';
+        html+='</div>';
+      } else if(m.iAgreed&&!m.theyAgreed){
+        html+='✓ You agreed to share.<br>Waiting for <strong>'+m.id+'</strong> to agree…';
+        html+='<div class="action-row">';
+        html+='<button class="btn btn-sm btn-rose" onclick="revokeReveal(\''+m.id+'\',this)">Revoke</button>';
+        html+='</div>';
       } else {
-        html += '<div class="phone-reveal">';
-        html += '<div style="margin-bottom:8px;">Would you like to share phone numbers?</div>';
-        if (m.theyAgreed) {
-          html += '<div style="margin-bottom:8px;color:var(--green);font-weight:600;">✓ ' + m.id + ' has already agreed!</div>';
-        }
-        html += '<button class="btn btn-sm btn-green" onclick="agreeReveal(\'' + m.id + '\', this)">Yes, share my number with ' + m.id + '</button>';
-        html += '</div>';
+        html+='<div style="margin-bottom:6px;">Share phone numbers with this match?</div>';
+        if(m.theyAgreed) html+='<div style="margin-bottom:6px;color:var(--green);font-weight:600;">✓ '+m.id+' has already agreed!</div>';
+        html+='<button class="btn btn-sm btn-green" onclick="agreeReveal(\''+m.id+'\',this)">Yes, share my number</button>';
       }
-      html += '</div>';
+
+      html+='</div></div>';
     });
-
-    content.innerHTML = html;
-
-  } catch (err) {
-    loading.style.display = 'none';
-    content.innerHTML = '<div class="msg msg-error">Connection error loading matches.</div>';
-  }
+    content.innerHTML=html;
+  }catch(e){loading.style.display='none';content.innerHTML='<div class="msg msg-error">Connection error.</div>';}
 }
 
-async function agreeReveal(matchId, btn) {
-  btn.innerHTML = '<span class="spinner"></span> Saving…'; btn.disabled = true;
-  try {
-    const res = await apiCall({ action: 'agreeReveal', id: currentUser.id, matchId: matchId });
-    if (res.success) {
-      // Reload matches to show updated state
-      loadMatches();
-    } else {
-      btn.textContent = 'Error — try again'; btn.disabled = false;
-    }
-  } catch (err) {
-    btn.textContent = 'Error — try again'; btn.disabled = false;
-  }
+async function agreeReveal(matchId,btn){
+  btn.innerHTML='<span class="spinner"></span>';btn.disabled=true;
+  try{await apiCall({action:'agreeReveal',id:currentUser.id,matchId});loadMatches();}
+  catch(e){btn.textContent='Error — retry';btn.disabled=false;}
 }
 
-// --- WHO SELECTED ME ---
-async function loadSelectedMe() {
-  const content = document.getElementById('selectedMeContent');
-  const loading = document.getElementById('selectedMeLoading');
-  content.innerHTML = ''; loading.style.display = 'block';
+async function revokeReveal(matchId,btn){
+  btn.innerHTML='<span class="spinner"></span>';btn.disabled=true;
+  try{await apiCall({action:'revokeReveal',id:currentUser.id,matchId});loadMatches();}
+  catch(e){btn.textContent='Error — retry';btn.disabled=false;}
+}
 
-  try {
-    const res = await apiCall({ action: 'whoSelectedMe', id: currentUser.id });
-    loading.style.display = 'none';
-
-    if (!res.success) { content.innerHTML = '<div class="msg msg-error">' + res.error + '</div>'; return; }
-
-    if (!res.selectedBy || !res.selectedBy.length) {
-      content.innerHTML = '<div class="msg msg-info">No one has selected you yet. Check back later!</div>';
-      return;
-    }
-
-    let html = '<p style="margin-bottom:14px;font-size:.9rem;color:var(--ink-soft);">' + res.selectedBy.length + ' participant(s) selected you:</p><div>';
-    res.selectedBy.forEach(id => {
-      html += '<span class="selector-tag">' + id + '</span>';
-    });
-    html += '</div>';
-    content.innerHTML = html;
-
-  } catch (err) {
-    loading.style.display = 'none';
-    content.innerHTML = '<div class="msg msg-error">Connection error.</div>';
-  }
+// --- Who selected me ---
+async function loadSelectedMe(){
+  const content=document.getElementById('selectedMeContent'),loading=document.getElementById('selectedMeLoading');
+  content.innerHTML='';loading.style.display='block';
+  try{
+    const res=await apiCall({action:'whoSelectedMe',id:currentUser.id});
+    loading.style.display='none';
+    if(!res.success){content.innerHTML='<div class="msg msg-error">'+res.error+'</div>';return;}
+    if(!res.selectedBy||!res.selectedBy.length){content.innerHTML='<div class="msg msg-info">No one has selected you yet.</div>';return;}
+    let html='<p style="margin-bottom:10px;font-size:.88rem;color:var(--ink-soft);">'+res.selectedBy.length+' participant(s) selected you:</p><div>';
+    res.selectedBy.forEach(id=>{html+='<span class="selector-tag">'+id+'</span>';});
+    html+='</div>';
+    content.innerHTML=html;
+  }catch(e){loading.style.display='none';content.innerHTML='<div class="msg msg-error">Connection error.</div>';}
 }
 </script>
 </body>
