@@ -133,11 +133,6 @@
 
   <!-- MAIN -->
   <div class="screen" id="screenMain">
-    <!-- Countdown inside main too -->
-    <div id="countdownBannerMain" class="countdown-banner" style="display:none;">
-      <div class="days" id="countdownDaysMain"></div>
-      <div class="label-text" id="countdownLabelMain"></div>
-    </div>
 
     <div class="card" style="padding-bottom:6px;">
       <h2>Welcome, <span id="userName"></span></h2>
@@ -197,7 +192,7 @@
 
 <script>
 // ============================================================
-const API_URL = 'https://script.google.com/macros/s/AKfycbxK0aopVke4ehvWKVJ_4uxIeLON-LNsdovp9UDeWrCGuXvQTQzqRkYO1Mj0osjBG8vi/exec';
+const API_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
 // ============================================================
 
 let currentUser = null, options = [], selected = [];
@@ -246,17 +241,11 @@ function updateCountdown() {
     label = 'remaining — hurry!';
   }
 
-  // Login screen
+  // Login screen only
   const b1 = document.getElementById('countdownBanner');
   b1.style.display = 'block';
   document.getElementById('countdownDays').textContent = text;
   document.getElementById('countdownLabel').textContent = label;
-
-  // Main screen
-  const b2 = document.getElementById('countdownBannerMain');
-  b2.style.display = 'block';
-  document.getElementById('countdownDaysMain').textContent = text;
-  document.getElementById('countdownLabelMain').textContent = label;
 }
 
 // --- Helpers ---
