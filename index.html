@@ -225,6 +225,7 @@ function updateCountdown() {
   const now = new Date();
   const diff = countdownEnd - now;
   if (diff <= 0) {
+    document.getElementById('countdownBanner').style.display = 'none';
     showScreen('screenClosed');
     return;
   }
