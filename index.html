@@ -197,6 +197,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbxK0aopVke4ehvWKVJ_4uxI
 
 let currentUser = null, options = [], selected = [];
 let countdownEnd = null;
+let cachedMatches = null, cachedSelectedBy = null;
 
 window.addEventListener('DOMContentLoaded', async () => {
   if (API_URL === 'YOUR_APPS_SCRIPT_URL_HERE') { showScreen('screenLogin'); return; }
@@ -274,7 +275,7 @@ function switchTab(name) {
   if(name==='selectedme') loadSelectedMe();
 }
 
-// --- Login ---
+// --- Login (single API call — returns everything) ---
 async function doLogin() {
   clearMsg('loginError');
   const id=document.getElementById('loginId').value.trim();
@@ -288,12 +289,15 @@ async function doLogin() {
       if(res.error==='EVENT_CLOSED'){showScreen('screenClosed');return;}
       showMsg('loginError',res.error,'error');btn.textContent='Sign In';btn.disabled=false;return;
     }
+
+    // Everything comes back in one response
     currentUser=res.participant;
+    options=res.options;
+    cachedMatches=res.matches||[];
+    cachedSelectedBy=res.selectedBy||[];
+
     document.getElementById('userName').textContent=currentUser.name||currentUser.id;
-    const optRes=await apiCall({action:'getOptions',id:currentUser.id});
-    if(!optRes.success){showMsg('loginError',optRes.error,'error');btn.textContent='Sign In';btn.disabled=false;return;}
-    options=optRes.options;
-    const lbl=optRes.myGender==='M'?'female':'male';
+    const lbl=res.myGender==='M'?'female':'male';
     if(currentUser.alreadySubmitted&&currentUser.selections){
       selected=currentUser.selections.split(',').map(s=>s.trim().toUpperCase()).filter(s=>s);
       document.getElementById('mainSubtitle').textContent='You are '+currentUser.id+'. Update selections or view matches.';
@@ -301,6 +305,10 @@ async function doLogin() {
       selected=[];
       document.getElementById('mainSubtitle').textContent='You are '+currentUser.id+'. Select '+lbl+' participants.';
     }
+
+    // Update match badge immediately
+    document.getElementById('matchBadge').textContent=cachedMatches.length?'('+cachedMatches.length+')':'';
+
     renderOptions();showScreen('screenMain');switchTab('selections');
   } catch(err){showMsg('loginError','Connection error.','error');}
   btn.textContent='Sign In';btn.disabled=false;
@@ -358,74 +366,101 @@ async function doSubmit(){
 }
 
 // --- Matches ---
-async function loadMatches(){
+async function loadMatches(forceRefresh){
   const content=document.getElementById('matchesContent'),loading=document.getElementById('matchesLoading');
+
+  // Show cached data instantly if available
+  if(cachedMatches && !forceRefresh){
+    loading.style.display='none';
+    renderMatches(cachedMatches);
+    return;
+  }
+
   content.innerHTML='';loading.style.display='block';
   try{
     const res=await apiCall({action:'getMyMatches',id:currentUser.id});
     loading.style.display='none';
     if(!res.success){content.innerHTML='<div class="msg msg-error">'+res.error+'</div>';return;}
-    if(!res.matches||!res.matches.length){
-      content.innerHTML='<div class="msg msg-info">No mutual matches yet. Check back later!</div>';
-      document.getElementById('matchBadge').textContent='';return;
-    }
-    document.getElementById('matchBadge').textContent='('+res.matches.length+')';
-    let html='';
-    res.matches.forEach(m=>{
-      html+='<div class="match-card">';
-      html+='<h3>Match: '+m.id+(m.name?' — '+m.name:'')+'</h3>';
-      html+='<div class="detail">You ranked them #'+m.myRank+' · They ranked you #'+m.theirRank+'</div>';
-      html+='<div class="phone-reveal">';
-
-      if(m.bothAgreed){
-        html+='<div style="margin-bottom:6px;">Both agreed! Numbers revealed:</div>';
-        html+='<div class="phone-number">📞 '+m.phone+'</div>';
-        html+='<div class="action-row">';
-        html+='<button class="btn btn-sm btn-rose" onclick="revokeReveal(\''+m.id+'\',this)">Revoke sharing</button>';
-        html+='</div>';
-      } else if(m.iAgreed&&!m.theyAgreed){
-        html+='✓ You agreed to share.<br>Waiting for <strong>'+m.id+'</strong> to agree…';
-        html+='<div class="action-row">';
-        html+='<button class="btn btn-sm btn-rose" onclick="revokeReveal(\''+m.id+'\',this)">Revoke</button>';
-        html+='</div>';
-      } else {
-        html+='<div style="margin-bottom:6px;">Share phone numbers with this match?</div>';
-        if(m.theyAgreed) html+='<div style="margin-bottom:6px;color:var(--green);font-weight:600;">✓ '+m.id+' has already agreed!</div>';
-        html+='<button class="btn btn-sm btn-green" onclick="agreeReveal(\''+m.id+'\',this)">Yes, share my number</button>';
-      }
-
-      html+='</div></div>';
-    });
-    content.innerHTML=html;
+    cachedMatches=res.matches||[];
+    renderMatches(cachedMatches);
   }catch(e){loading.style.display='none';content.innerHTML='<div class="msg msg-error">Connection error.</div>';}
+}
+
+function renderMatches(matches){
+  const content=document.getElementById('matchesContent');
+  if(!matches||!matches.length){
+    content.innerHTML='<div class="msg msg-info">No mutual matches yet. Check back later!</div>';
+    document.getElementById('matchBadge').textContent='';return;
+  }
+  document.getElementById('matchBadge').textContent='('+matches.length+')';
+  let html='';
+  matches.forEach(m=>{
+    html+='<div class="match-card">';
+    html+='<h3>Match: '+m.id+(m.name?' — '+m.name:'')+'</h3>';
+    html+='<div class="detail">You ranked them #'+m.myRank+' · They ranked you #'+m.theirRank+'</div>';
+    html+='<div class="phone-reveal">';
+    if(m.bothAgreed){
+      html+='<div style="margin-bottom:6px;">Both agreed! Numbers revealed:</div>';
+      html+='<div class="phone-number">📞 '+m.phone+'</div>';
+      html+='<div class="action-row">';
+      html+='<button class="btn btn-sm btn-rose" onclick="revokeReveal(\''+m.id+'\',this)">Revoke sharing</button>';
+      html+='</div>';
+    } else if(m.iAgreed&&!m.theyAgreed){
+      html+='✓ You agreed to share.<br>Waiting for <strong>'+m.id+'</strong> to agree…';
+      html+='<div class="action-row">';
+      html+='<button class="btn btn-sm btn-rose" onclick="revokeReveal(\''+m.id+'\',this)">Revoke</button>';
+      html+='</div>';
+    } else {
+      html+='<div style="margin-bottom:6px;">Share phone numbers with this match?</div>';
+      if(m.theyAgreed) html+='<div style="margin-bottom:6px;color:var(--green);font-weight:600;">✓ '+m.id+' has already agreed!</div>';
+      html+='<button class="btn btn-sm btn-green" onclick="agreeReveal(\''+m.id+'\',this)">Yes, share my number</button>';
+    }
+    html+='</div></div>';
+  });
+  content.innerHTML=html;
+}
 }
 
 async function agreeReveal(matchId,btn){
   btn.innerHTML='<span class="spinner"></span>';btn.disabled=true;
-  try{await apiCall({action:'agreeReveal',id:currentUser.id,matchId});loadMatches();}
+  try{await apiCall({action:'agreeReveal',id:currentUser.id,matchId});cachedMatches=null;loadMatches(true);}
   catch(e){btn.textContent='Error — retry';btn.disabled=false;}
 }
 
 async function revokeReveal(matchId,btn){
   btn.innerHTML='<span class="spinner"></span>';btn.disabled=true;
-  try{await apiCall({action:'revokeReveal',id:currentUser.id,matchId});loadMatches();}
+  try{await apiCall({action:'revokeReveal',id:currentUser.id,matchId});cachedMatches=null;loadMatches(true);}
   catch(e){btn.textContent='Error — retry';btn.disabled=false;}
 }
 
 // --- Who selected me ---
-async function loadSelectedMe(){
+async function loadSelectedMe(forceRefresh){
   const content=document.getElementById('selectedMeContent'),loading=document.getElementById('selectedMeLoading');
+
+  // Show cached data instantly
+  if(cachedSelectedBy && !forceRefresh){
+    loading.style.display='none';
+    renderSelectedMe(cachedSelectedBy);
+    return;
+  }
+
   content.innerHTML='';loading.style.display='block';
   try{
     const res=await apiCall({action:'whoSelectedMe',id:currentUser.id});
     loading.style.display='none';
     if(!res.success){content.innerHTML='<div class="msg msg-error">'+res.error+'</div>';return;}
-    if(!res.selectedBy||!res.selectedBy.length){content.innerHTML='<div class="msg msg-info">No one has selected you yet.</div>';return;}
-    let html='<p style="margin-bottom:10px;font-size:.88rem;color:var(--ink-soft);">'+res.selectedBy.length+' participant(s) selected you:</p><div>';
-    res.selectedBy.forEach(id=>{html+='<span class="selector-tag">'+id+'</span>';});
-    html+='</div>';
-    content.innerHTML=html;
+    cachedSelectedBy=res.selectedBy||[];
+    renderSelectedMe(cachedSelectedBy);
   }catch(e){loading.style.display='none';content.innerHTML='<div class="msg msg-error">Connection error.</div>';}
+}
+
+function renderSelectedMe(list){
+  const content=document.getElementById('selectedMeContent');
+  if(!list||!list.length){content.innerHTML='<div class="msg msg-info">No one has selected you yet.</div>';return;}
+  let html='<p style="margin-bottom:10px;font-size:.88rem;color:var(--ink-soft);">'+list.length+' participant(s) selected you:</p><div>';
+  list.forEach(id=>{html+='<span class="selector-tag">'+id+'</span>';});
+  html+='</div><div style="margin-top:12px;"><button class="btn btn-outline" onclick="cachedSelectedBy=null;loadSelectedMe(true);">Refresh</button></div>';
+  content.innerHTML=html;
 }
 </script>
 </body>
