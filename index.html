@@ -362,8 +362,8 @@ function renderOptions(){
   renderSelectedList();
   const changed = selected.join(',') !== originalSelections;
   const btn = document.getElementById('btnSubmit');
-  btn.disabled = selected.length === 0 || !changed;
-  btn.textContent = changed ? 'Save Selections' : (selected.length ? 'No changes to save' : 'Save Selections');
+  btn.disabled = !changed;
+  btn.textContent = changed ? (selected.length ? 'Save Selections' : 'Clear All Selections') : (selected.length ? 'No changes to save' : 'No changes to save');
 }
 function toggleOption(id){clearMsg('selError');const i=selected.indexOf(id);if(i>=0)selected.splice(i,1);else selected.push(id);renderOptions();}
 function renderSelectedList(){
@@ -387,14 +387,21 @@ function removeAt(i){selected.splice(i,1);renderOptions();}
 
 // --- Submit ---
 async function doSubmit(){
-  if(!selected.length)return;clearMsg('selError');
+  clearMsg('selError');
   const btn=document.getElementById('btnSubmit');
   btn.innerHTML='<span class="spinner"></span> Saving…';btn.disabled=true;
   try{
-    const res=await apiCall({action:'submitSelections',id:currentUser.id,selections:selected.join(',')});
+    const selString = selected.join(',');
+    // If empty, send a special value that the API will store as blank
+    const res = await apiCall({
+      action: 'submitSelections',
+      id: currentUser.id,
+      selections: selString || '_CLEAR_'
+    });
     if(!res.success){showMsg('selError',res.error,'error');btn.textContent='Save Selections';btn.disabled=false;return;}
-    currentUser.alreadySubmitted=true;currentUser.selections=selected.join(',');
-    originalSelections=selected.join(',');
+    currentUser.alreadySubmitted = selected.length > 0;
+    currentUser.selections = selString;
+    originalSelections = selString;
     cachedMatches=null;cachedSelectedBy=null;
     btn.textContent='No changes to save';btn.disabled=true;
     showScreen('screenDone');
