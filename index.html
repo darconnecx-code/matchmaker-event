@@ -47,18 +47,14 @@
   .option-chip{display:flex;align-items:center;gap:6px;padding:9px 12px;background:var(--cream);border:1.5px solid var(--cream-dark);border-radius:8px;cursor:pointer;font-size:.84rem;font-weight:500;transition:all .2s;user-select:none;}
   .option-chip:hover{border-color:var(--gold-light);background:#fff;}
   .option-chip.selected{border-color:var(--gold);background:linear-gradient(135deg,#fdf6e3,#fff8e7);box-shadow:0 0 0 1px var(--gold);}
-  .option-chip .rank{display:none;min-width:20px;height:20px;border-radius:50%;background:var(--gold);color:#fff;font-size:.68rem;font-weight:700;align-items:center;justify-content:center;flex-shrink:0;}
-  .option-chip.selected .rank{display:inline-flex;}
+  .option-chip .check{display:none;color:var(--gold-dark);font-weight:700;font-size:.9rem;}
+  .option-chip.selected .check{display:inline;}
 
   .selected-list{margin-bottom:16px;}
   .selected-list h3{font-size:.76rem;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-soft);margin-bottom:8px;}
   .sel-count{font-size:.8rem;color:var(--ink-soft);margin-bottom:8px;}
-  .selected-item{display:flex;align-items:center;gap:8px;padding:7px 10px;background:#fff;border:1.5px solid var(--gold-light);border-radius:8px;margin-bottom:5px;font-size:.84rem;font-weight:500;}
-  .selected-item .num{min-width:20px;height:20px;border-radius:50%;background:var(--gold);color:#fff;font-size:.68rem;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
-  .selected-item .move-btns{margin-left:auto;display:flex;gap:2px;}
-  .selected-item .move-btns button{background:var(--cream);border:1px solid var(--cream-dark);border-radius:4px;width:24px;height:24px;cursor:pointer;font-size:.68rem;display:flex;align-items:center;justify-content:center;}
-  .selected-item .move-btns button:hover{background:var(--cream-dark);}
-  .remove-btn{background:none;border:none;color:var(--rose);cursor:pointer;font-size:.95rem;padding:0 3px;}
+  .selected-tag{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:#fff;border:1.5px solid var(--gold-light);border-radius:20px;margin:3px 3px 3px 0;font-size:.83rem;font-weight:500;}
+  .selected-tag .remove-x{cursor:pointer;color:var(--rose);font-weight:700;font-size:.9rem;}
 
   .search-box{width:100%;padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:.86rem;border:1.5px solid var(--cream-dark);border-radius:8px;background:var(--cream);color:var(--ink);outline:none;margin-bottom:10px;}
   .search-box:focus{border-color:var(--gold);}
@@ -167,11 +163,11 @@
     <div class="tab-content active" id="tabSelections">
       <div class="card">
         <div id="selError"></div>
-        <label>Tap to select in order of preference</label>
+        <label>Tap to select participants you're interested in</label>
         <input type="text" class="search-box" id="searchBox" placeholder="Search by ID or name..." oninput="renderOptions()">
         <div class="options-grid" id="optionsGrid"></div>
         <div class="selected-list" id="selectedListWrap" style="display:none;">
-          <h3>Your ranked selections</h3>
+          <h3>Your selections</h3>
           <div class="sel-count" id="selCount"></div>
           <div id="selectedList"></div>
         </div>
@@ -211,7 +207,7 @@
 
 <script>
 // ============================================================
-const API_URL = 'https://script.google.com/macros/s/AKfycbxK0aopVke4ehvWKVJ_4uxIeLON-LNsdovp9UDeWrCGuXvQTQzqRkYO1Mj0osjBG8vi/exec';
+const API_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
 // ============================================================
 
 let currentUser = null, options = [], selected = [];
@@ -333,7 +329,7 @@ async function doLogin() {
     } else {
       selected=[];
       originalSelections='';
-      document.getElementById('mainSubtitle').textContent='You are '+currentUser.id+'. Select '+lbl+' participants.';
+      document.getElementById('mainSubtitle').textContent='You are '+currentUser.id+'. Select '+lbl+' participants you are interested in.';
     }
 
     // Update match badge immediately
@@ -353,8 +349,7 @@ function renderOptions(){
     const chip=document.createElement('div');
     const isSel=selected.includes(opt.id);
     chip.className='option-chip'+(isSel?' selected':'');
-    const ri=selected.indexOf(opt.id);
-    chip.innerHTML='<span class="rank">'+(ri>=0?ri+1:'')+'</span><span>'+opt.id+'</span>';
+    chip.innerHTML='<span class="check">✓</span><span>'+opt.id+'</span>';
     chip.title=opt.name||opt.id;
     chip.onclick=()=>toggleOption(opt.id);
     grid.appendChild(chip);
@@ -374,15 +369,11 @@ function renderSelectedList(){
   list.innerHTML='';
   selected.forEach((id,i)=>{
     const opt=options.find(o=>o.id===id);
-    const div=document.createElement('div');div.className='selected-item';
-    div.innerHTML='<span class="num">'+(i+1)+'</span><span>'+id+(opt&&opt.name?' — '+opt.name:'')+'</span>'+
-      '<span class="move-btns"><button onclick="moveUp('+i+')">▲</button><button onclick="moveDown('+i+')">▼</button></span>'+
-      '<button class="remove-btn" onclick="removeAt('+i+')">✕</button>';
-    list.appendChild(div);
+    const span=document.createElement('span');span.className='selected-tag';
+    span.innerHTML=id+(opt&&opt.name?' — '+opt.name:'')+' <span class="remove-x" onclick="removeAt('+i+')">✕</span>';
+    list.appendChild(span);
   });
 }
-function moveUp(i){if(i>0){[selected[i-1],selected[i]]=[selected[i],selected[i-1]];renderOptions();}}
-function moveDown(i){if(i<selected.length-1){[selected[i],selected[i+1]]=[selected[i+1],selected[i]];renderOptions();}}
 function removeAt(i){selected.splice(i,1);renderOptions();}
 
 // --- Submit ---
@@ -440,7 +431,7 @@ function renderMatches(matches){
   matches.forEach(m=>{
     html+='<div class="match-card">';
     html+='<h3>Match: '+m.id+(m.name?' — '+m.name:'')+'</h3>';
-    html+='<div class="detail">You ranked them #'+m.myRank+' · They ranked you #'+m.theirRank+'</div>';
+    html+='<div class="detail">You both selected each other!</div>';
     html+='<div class="phone-reveal">';
     if(m.bothAgreed){
       html+='<div style="margin-bottom:6px;">Both agreed! Numbers revealed:</div>';
