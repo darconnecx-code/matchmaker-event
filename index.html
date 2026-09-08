@@ -154,6 +154,10 @@
         <label for="loginPass">Password</label>
         <input type="password" id="loginPass" placeholder="6-digit password" inputmode="numeric">
       </div>
+      <div class="field" id="phoneVerifyField" style="display:none;">
+        <label for="loginPhone">Last 4 digits of your phone number</label>
+        <input type="text" id="loginPhone" placeholder="e.g. 7619" inputmode="numeric" maxlength="4" autocomplete="off">
+      </div>
       <button class="btn btn-primary" id="btnLogin" onclick="doLogin()">Sign In</button>
     </div>
   </div>
@@ -248,7 +252,7 @@
 
 <script>
 // ============================================================
-const API_URL = 'https://script.google.com/macros/s/AKfycbxK0aopVke4ehvWKVJ_4uxIeLON-LNsdovp9UDeWrCGuXvQTQzqRkYO1Mj0osjBG8vi/exec';
+const API_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
 // ============================================================
 
 let currentUser = null, options = [], selected = [];
@@ -256,12 +260,17 @@ let countdownEnd = null;
 let cachedMatches = null, cachedSelectedBy = null;
 let originalSelections = '';
 let activeTab = 'selections';
+let phoneVerifyEnabled = false;
 
 window.addEventListener('DOMContentLoaded', async () => {
   if (API_URL === 'YOUR_APPS_SCRIPT_URL_HERE') { showScreen('screenLogin'); return; }
   try {
     const res = await apiCall({action:'checkStatus'});
     if (res.success && res.status === 'CLOSED') { showScreen('screenClosed'); return; }
+    if (res.phoneVerify) {
+      phoneVerifyEnabled = true;
+      document.getElementById('phoneVerifyField').style.display = 'block';
+    }
     if (res.countdownEnd) {
       countdownEnd = new Date(res.countdownEnd);
       updateCountdown();
@@ -272,8 +281,9 @@ window.addEventListener('DOMContentLoaded', async () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('loginPass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+  document.getElementById('loginPass').addEventListener('keydown', e => { if(e.key==='Enter') { if(phoneVerifyEnabled) document.getElementById('loginPhone').focus(); else doLogin(); } });
   document.getElementById('loginId').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('loginPass').focus(); });
+  document.getElementById('loginPhone').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
 });
 
 function updateCountdown() {
@@ -331,10 +341,14 @@ async function doLogin() {
   const id=document.getElementById('loginId').value.trim();
   const pw=document.getElementById('loginPass').value.trim();
   if(!id||!pw){showMsg('loginError','Please enter both fields.','error');return;}
+  const phoneLast4 = phoneVerifyEnabled ? document.getElementById('loginPhone').value.trim() : '';
+  if(phoneVerifyEnabled && phoneLast4.length !== 4){showMsg('loginError','Please enter the last 4 digits of your phone number.','error');return;}
   const btn=document.getElementById('btnLogin');
   btn.innerHTML='<span class="spinner"></span> Signing in…';btn.disabled=true;
   try {
-    const res=await apiCall({action:'login',id,password:pw});
+    const params = {action:'login',id,password:pw};
+    if (phoneVerifyEnabled) params.phoneLast4 = phoneLast4;
+    const res=await apiCall(params);
     if(!res.success){
       if(res.error==='EVENT_CLOSED'){showScreen('screenClosed');return;}
       showMsg('loginError',res.error,'error');btn.textContent='Sign In';btn.disabled=false;return;
