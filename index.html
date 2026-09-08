@@ -261,6 +261,7 @@ let cachedMatches = null, cachedSelectedBy = null;
 let originalSelections = '';
 let activeTab = 'selections';
 let phoneVerifyEnabled = false;
+let loginController = null;
 
 window.addEventListener('DOMContentLoaded', async () => {
   if (API_URL === 'YOUR_APPS_SCRIPT_URL_HERE') { showScreen('screenLogin'); return; }
@@ -345,10 +346,13 @@ async function doLogin() {
   if(phoneVerifyEnabled && phoneLast4.length !== 4){showMsg('loginError','Please enter the last 4 digits of your phone number.','error');return;}
   const btn=document.getElementById('btnLogin');
   btn.innerHTML='<span class="spinner"></span> Signing in…';btn.disabled=true;
+  // Abort any pending login request
+  if (loginController) { try { loginController.abort(); } catch(e) {} }
+  loginController = new AbortController();
   try {
     const params = {action:'login',id,password:pw};
     if (phoneVerifyEnabled) params.phoneLast4 = phoneLast4;
-    const res=await apiCall(params);
+    const res = await fetch(API_URL+'?'+new URLSearchParams(params).toString(), { signal: loginController.signal }).then(r=>r.json());
     if(!res.success){
       if(res.error==='EVENT_CLOSED'){showScreen('screenClosed');return;}
       showMsg('loginError',res.error,'error');btn.textContent='Sign In';btn.disabled=false;return;
@@ -381,7 +385,7 @@ async function doLogin() {
     } else {
       showScreen('screenMain'); switchTab('selections');
     }
-  } catch(err){showMsg('loginError','Connection error.','error');}
+  } catch(err){ if(err.name !== 'AbortError') showMsg('loginError','Connection error.','error'); }
   btn.textContent='Sign In';btn.disabled=false;
 }
 
