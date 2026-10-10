@@ -261,7 +261,6 @@ let cachedMatches = null, cachedSelectedBy = null;
 let originalSelections = '';
 let activeTab = 'selections';
 let phoneVerifyEnabled = false;
-let loginController = null;
 
 window.addEventListener('DOMContentLoaded', async () => {
   if (API_URL === 'YOUR_APPS_SCRIPT_URL_HERE') { showScreen('screenLogin'); return; }
@@ -312,10 +311,16 @@ function showScreen(id) {
 function showMsg(c,t,ty){document.getElementById(c).innerHTML='<div class="msg msg-'+ty+'">'+t+'</div>';}
 function clearMsg(c){document.getElementById(c).innerHTML='';}
 
-async function apiCall(params) {
-  const res = await fetch(API_URL+'?'+new URLSearchParams(params).toString());
-  if(!res.ok) throw new Error('Network '+res.status);
-  return res.json();
+async function apiCall(params, retries) {
+  if (retries === undefined) retries = 1;
+  try {
+    const res = await fetch(API_URL+'?'+new URLSearchParams(params).toString());
+    if(!res.ok) throw new Error('Network '+res.status);
+    return res.json();
+  } catch(e) {
+    if (retries > 0) return apiCall(params, retries - 1);
+    throw e;
+  }
 }
 
 function switchTab(name) {
@@ -346,13 +351,10 @@ async function doLogin() {
   if(phoneVerifyEnabled && phoneLast4.length !== 4){showMsg('loginError','Please enter the last 4 digits of your phone number.','error');return;}
   const btn=document.getElementById('btnLogin');
   btn.innerHTML='<span class="spinner"></span> Signing in…';btn.disabled=true;
-  // Abort any pending login request
-  if (loginController) { try { loginController.abort(); } catch(e) {} }
-  loginController = new AbortController();
   try {
     const params = {action:'login',id,password:pw};
     if (phoneVerifyEnabled) params.phoneLast4 = phoneLast4;
-    const res = await fetch(API_URL+'?'+new URLSearchParams(params).toString(), { signal: loginController.signal }).then(r=>r.json());
+    const res = await apiCall(params);
     if(!res.success){
       if(res.error==='EVENT_CLOSED'){showScreen('screenClosed');return;}
       showMsg('loginError',res.error,'error');btn.textContent='Sign In';btn.disabled=false;return;
@@ -385,7 +387,7 @@ async function doLogin() {
     } else {
       showScreen('screenMain'); switchTab('selections');
     }
-  } catch(err){ if(err.name !== 'AbortError') showMsg('loginError','Connection error.','error'); }
+  } catch(err){showMsg('loginError','Connection error.','error');}
   btn.textContent='Sign In';btn.disabled=false;
 }
 
